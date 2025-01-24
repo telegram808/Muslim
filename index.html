@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Умра и Хадж - Заказ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .order-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        .order-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="order-form">
+        <h2>🕋 Заказ для Умры и Хаджа</h2>
+
+        <label for="package">Выберите пакет услуг:</label>
+        <select id="package" required>
+            <option value="" disabled selected>Выберите пакет</option>
+            <option value="Эконом">Эконом</option>
+            <option value="Комфорт">Комфорт</option>
+            <option value="Премиум">Премиум</option>
+        </select>
+
+        <label for="name">Ваше имя:</label>
+        <input type="text" id="name" placeholder="Введите ваше имя" required>
+
+        <label for="phone">Контактный номер:</label>
+        <input type="tel" id="phone" placeholder="Введите номер телефона" required>
+
+        <label for="departureDate">Дата выезда:</label>
+        <input type="date" id="departureDate" required>
+
+        <label for="returnDate">Дата возвращения:</label>
+        <input type="date" id="returnDate">
+
+        <label for="passengers">Количество человек:</label>
+        <input type="number" id="passengers" min="1" placeholder="Введите количество участников" required>
+
+        <label for="location">Ваш город:</label>
+        <textarea id="location" rows="2" placeholder="Введите ваш город" required></textarea>
+
+        <label for="contactMethod">Предпочитаемый способ связи:</label>
+        <select id="contactMethod" required>
+            <option value="" disabled selected>Выберите способ связи</option>
+            <option value="Телефон">Телефон</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Telegram">Telegram</option>
+        </select>
+
+        <label for="comments">Дополнительные пожелания:</label>
+        <textarea id="comments" rows="3" placeholder="Например: пожелания по проживанию, питанию и т.д."></textarea>
+
+        <label for="documents">Загрузите документы:</label>
+        <input type="file" id="documents" accept=".jpg, .jpeg, .png, .pdf" multiple>
+
+        <label>
+            <input type="checkbox" id="notifications"> Хочу получать уведомления о статусе заказа
+        </label>
+
+        <button onclick="submitOrder()">Отправить запрос</button>
+    </div>
+
+    <script>
+        function submitOrder() {
+            const packageType = document.getElementById("package").value;
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const departureDate = document.getElementById("departureDate").value;
+            const returnDate = document.getElementById("returnDate").value || "Не указана";
+            const passengers = document.getElementById("passengers").value;
+            const location = document.getElementById("location").value;
+            const contactMethod = document.getElementById("contactMethod").value;
+            const comments = document.getElementById("comments").value || "Нет";
+            const notifications = document.getElementById("notifications").checked ? "Да" : "Нет";
+
+            if (packageType && name && phone && departureDate && passengers && location && contactMethod) {
+                const message = `🕋 Заказ для Умры и Хаджа:\n` +
+                                `📦 Пакет услуг: ${packageType}\n` +
+                                `👤 Имя: ${name}\n` +
+                                `📞 Телефон: ${phone}\n` +
+                                `📅 Дата выезда: ${departureDate}\n` +
+                                `📅 Дата возвращения: ${returnDate}\n` +
+                                `👥 Количество человек: ${passengers}\n` +
+                                `📍 Город: ${location}\n` +
+                                `📲 Связь: ${contactMethod}\n` +
+                                `📝 Пожелания: ${comments}\n` +
+                                `🔔 Уведомления: ${notifications}`;
+                sendMessageToTelegram(message);
+            } else {
+                alert("Пожалуйста, заполните все обязательные поля!");
+            }
+        }
+
+        function sendMessageToTelegram(message) {
+            const botToken = "7769699769:AAHVTZ0HobCzMy3AdwpjZ8uLDeYY-5kW8t4"; // Замените на токен вашего бота
+            const chatId = "7892581147"; // Замените на ваш Chat ID
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: chatId, text: message })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Ваш запрос успешно отправлен!");
+                } else {
+                    alert("Ошибка отправки данных.");
+                }
+            })
+            .catch(error => {
+                alert("Ошибка: " + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
